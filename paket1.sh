@@ -2,6 +2,7 @@
 
 # Pastikan script dijalankan sebagai root
 if [[ $EUID -ne 0 ]]; then
+   echo "SCRIPT ADRIAN"
    echo "Script ini harus dijalankan sebagai root!" 
    exit 1
 fi
