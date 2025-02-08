@@ -106,23 +106,18 @@ EOF
 
 echo "Test DNS dengan nslookup..."
 nslookup adrian.kasir
+nslookup 192.202.30.2
 
 echo "Instalasi Apache, PHP, dan MariaDB..."
 apt-get install apache2 php php-mysql php-cli php-cgi php-gd mariadb-server unzip -y
 
 echo "Konfigurasi database..."
-mysql -e "CREATE DATABASE db_kasir;"
-mysql_secure_installation <<EOF
-
-Y
-Y
-123
-123
-Y
-Y
-Y
-Y
-EOF
+mysql -u root -e "CREATE DATABASE db_kasir;"
+mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '123';"
+mysql -u root -e "DELETE FROM mysql.user WHERE User='';"
+mysql -u root -e "DROP DATABASE IF EXISTS test;"
+mysql -u root -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';"
+mysql -u root -e "FLUSH PRIVILEGES;"
 
 echo "Download dan konfigurasi aplikasi POS..."
 cd /var/www/html
