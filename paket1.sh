@@ -2,7 +2,7 @@
 
 # Pastikan script dijalankan sebagai root
 if [[ $EUID -ne 0 ]]; then
-   echo "SCRIPT ADRIAN"
+   echo "SCRIPT BY ADRIAN"
    echo "Script ini harus dijalankan sebagai root!" 
    exit 1
 fi
@@ -13,18 +13,19 @@ network:
   ethernets:
     enp0s3:
       addresses:
-        - 192.200.30.2/30
+        - 192.202.30.2/30
       nameservers:
         addresses:
-          - 192.200.30.2
-          - 192.200.30.1
+          - 192.202.30.2
+          - 192.202.30.1
       routes:
         - to: default
-          via: 192.200.30.1
+          via: 192.202.30.1
   version: 2
 EOF
 
 netplan apply
+sleep 2
 
 echo "Update dan install BIND9..."
 apt update -y
@@ -46,7 +47,7 @@ zone "adrian.kasir" {
     file "/etc/bind/db.domain";
 };
 
-zone "30.200.192.in-addr.arpa" {
+zone "30.202.192.in-addr.arpa" {
     type master;
     file "/etc/bind/db.ip";
 };
@@ -76,7 +77,7 @@ $TTL	604800
 			 604800	)	; Negative Cache TTL
 ;
 @	IN	NS	adrian.kasir.
-@	IN	A	192.200.30.2
+@	IN	A	192.202.30.2
 EOF
 
 cp /etc/bind/db.127 /etc/bind/db.ip
@@ -100,8 +101,8 @@ service bind9 restart
 
 echo "Konfigurasi resolv.conf..."
 cat <<EOF > /etc/resolv.conf
-nameserver 192.200.30.2
-nameserver 192.200.30.1
+nameserver 192.202.30.2
+nameserver 192.202.30.1
 EOF
 
 echo "Test DNS dengan nslookup..."
@@ -124,11 +125,10 @@ cd /var/www/html
 rm index.html
 wget https://fnoor.my.id/app/pos.zip
 unzip pos.zip
-mysql db_kasir < db_toko.sql
+mysql -u root -p'123' db_kasir < db_toko.sql
 
 echo "Konfigurasi file PHP..."
 cat <<EOF > /var/www/html/config.php
-mysql_secure_installation <<EOF
 <?php
 
 
@@ -136,19 +136,19 @@ date_default_timezone_set("Asia/Jakarta");
 error_reporting(0);
 
         // sesuaikan dengan server anda
-        $host   = 'localhost'; // host server
-        $user   = 'root';  // username server
-        $pass   = '123'; // password server, kalau pakai x>
-        $dbname = 'db_kasir'; // nama database anda
+        \$host   = 'localhost'; // host server
+        \$user   = 'root';  // username server
+        \$pass   = '123'; // password server, kalau pakai xampp kosongin saja
+        \$dbname = 'db_kasir'; // nama database anda
 
         try{
-                $config = new PDO("mysql:host=$host;dbn>
+                \$config = new PDO("mysql:host=\$host;dbname=\$dbname;", \$user,\$pass);
                 //echo 'sukses';
-        }catch(PDOException $e){
-                echo 'KONEKSI GAGAL' .$e -> getMessage(>
+        }catch(PDOException \$e){
+                echo 'KONEKSI GAGAL' .\$e -> getMessage();
         }
 
-        $view = 'fungsi/view/view.php'; // direktori fu>
+       \$view = 'fungsi/view/view.php'; // direktori fungsi select data
 ?>
 EOF
 
