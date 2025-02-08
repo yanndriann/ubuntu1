@@ -133,22 +133,27 @@ mysql db_kasir < db_toko.sql
 
 echo "Konfigurasi file PHP..."
 cat <<EOF > /var/www/html/config.php
+mysql_secure_installation <<EOF
 <?php
+
+
 date_default_timezone_set("Asia/Jakarta");
 error_reporting(0);
 
-\$host = "localhost";
-\$user = "root";
-\$pass = "123";
-\$dbname = "db_kasir";
+        // sesuaikan dengan server anda
+        $host   = 'localhost'; // host server
+        $user   = 'root';  // username server
+        $pass   = '123'; // password server, kalau pakai x>
+        $dbname = 'db_kasir'; // nama database anda
 
-try {
-    \$config = new PDO("mysql:host=\$host;dbname=\$dbname", \$user, \$pass);
-} catch (PDOException \$e) {
-    echo "KONEKSI GAGAL: " . \$e->getMessage();
-}
+        try{
+                $config = new PDO("mysql:host=$host;dbn>
+                //echo 'sukses';
+        }catch(PDOException $e){
+                echo 'KONEKSI GAGAL' .$e -> getMessage(>
+        }
 
-\$view = "fungsi/view/view.php";
+        $view = 'fungsi/view/view.php'; // direktori fu>
 ?>
 EOF
 
